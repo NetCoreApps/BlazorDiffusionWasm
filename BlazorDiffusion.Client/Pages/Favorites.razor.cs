@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using BlazorDiffusion.UI;
 using BlazorDiffusion.ServiceModel;
 using Ljbc1994.Blazor.IntersectionObserver;
+using ServiceStack.Logging;
 
 namespace BlazorDiffusion.Pages;
 
@@ -12,6 +13,7 @@ public partial class Favorites : AppAuthComponentBase, IDisposable
     [Inject] NavigationManager NavigationManager { get; set; } = default!;
     [Inject] IIntersectionObserverService ObserverService { get; set; } = default!;
     [Inject] IJSRuntime JS { get; set; }
+    [Inject] ILogger<Favorites> Log { get; set; } = default!;
 
     [Parameter] public int? Album { get; set; }
     [Parameter] public int? Id { get; set; }
@@ -159,15 +161,23 @@ public partial class Favorites : AppAuthComponentBase, IDisposable
 
     public async Task SetupObserver()
     {
-        bottomObserver = await ObserverService.Observe(BottomElement, async (entries) =>
+        try
         {
-            var entry = entries.FirstOrDefault();
-            if (entry?.IsIntersecting == true)
+            bottomObserver = await ObserverService.Observe(BottomElement, async (entries) =>
             {
-                await loadMore();
-            }
-            StateHasChanged();
-        });
+                var entry = entries.FirstOrDefault();
+                if (entry?.IsIntersecting == true)
+                {
+                    await loadMore();
+                }
+                StateHasChanged();
+            });
+        }
+        catch (Exception e)
+        {
+            // throws on initial load
+            Log.LogError("Favorites ObserverService.Observe(BottomElement): {0}", e.ToString());
+        }
     }
 
     public Artifact? GetAlbumCover(AlbumResult album) => UserState.GetAlbumCoverArtifact(album);

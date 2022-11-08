@@ -120,15 +120,23 @@ public partial class Index : AppAuthComponentBase, IDisposable
 
     public async Task SetupObserver()
     {
-        bottomObserver = await ObserverService.Observe(BottomElement, async (entries) =>
+        try
         {
-            var entry = entries.FirstOrDefault();
-            if (entry?.IsIntersecting == true)
+            bottomObserver = await ObserverService.Observe(BottomElement, async (entries) =>
             {
-                await loadMore();
-            }
-            StateHasChanged();
-        });
+                var entry = entries.FirstOrDefault();
+                if (entry?.IsIntersecting == true)
+                {
+                    await loadMore();
+                }
+                StateHasChanged();
+            });
+        }
+        catch (Exception e)
+        {
+            // throws on initial load
+            Log.LogError("Index ObserverService.Observe(BottomElement): {0}", e.ToString());
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
