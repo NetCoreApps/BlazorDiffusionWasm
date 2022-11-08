@@ -1,0 +1,86 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject ServiceStackStateProvider AuthStateProvider;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JS
+@inject ILogger<MainLayout> log
+@inject CachedLocalStorage LocalStorage
+
+<div class="min-h-screen">
+    <Header />
+
+    <div class="flex flex-col flex-1">
+        <main class="flex-1">
+            <div class="py-6">
+                <div class="px-4 sm:px-6 md:px-8">
+                    @Body
+                </div>
+            </div>
+        </main>
+    </div>
+
+</div>
+
+<div class="-mt-8 text-center">
+    <a class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100" href="https://servicestack.net/blazor" target="_blank" title="powered by">servicestack.net/blazor</a>
+</div>
+
+@code {
+    [CascadingParameter] protected Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+    [Inject] KeyboardNavigation KeyboardNavigation { get; set; } = default!;
+    [Inject] UserState UserState { get; set; } = default!;
+
+    Task<AuthenticationState>? authStateTask;
+
+    string LoginUrl { get; set; } = "/signin";
+
+    protected override void OnInitialized()
+    {
+        AuthStateProvider.AuthenticationStateChanged += AuthenticationStateChanged;
+        base.OnInitialized();
+    }
+
+    public void AuthenticationStateChanged(Task<AuthenticationState> authStateTask)
+    {
+        log.LogDebug("AuthenticationStateChanged");
+        this.authStateTask = authStateTask;
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        LoginUrl = NavigationManager.GetLoginUrl();
+        return Task.CompletedTask;
+    }
+
+    async Task logout()
+    {
+        await AuthStateProvider.LogoutAsync();
+        NavigationManager.NavigateTo(LoginUrl, true);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            dotnetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("JS.registerKeyNav", dotnetRef);
+            await JS.InvokeVoidAsync("JS.addClass", "html", "dark");
+            await UserState.LoadAppPrefs();
+        }
+    }
+
+    private DotNetObjectReference<MainLayout>? dotnetRef;
+
+    [JSInvokable]
+    public async Task OnKeyNav(string key)
+    {
+        await KeyboardNavigation.SendKeyAsync(key);
+    }
+
+    public void Dispose()
+    {
+        dotnetRef?.Dispose();
+        dotnetRef = null;
+    }
+}

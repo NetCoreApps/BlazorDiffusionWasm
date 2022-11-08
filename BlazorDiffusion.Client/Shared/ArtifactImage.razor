@@ -1,0 +1,57 @@
+﻿@using Ljbc1994.Blazor.IntersectionObserver.Components
+@inherits UiComponentBase
+
+@if (Artifact != null)
+{
+    if (LazyLoad)
+    {
+        <IntersectionObserve>
+            @{
+                if (context.IsIntersecting) 
+                {
+                    UserState.HasIntersected.Add(Artifact.Id);
+                }
+            }
+            <div class=@ClassNames("overflow-hidden", Class) style=@Artifact.GetBackgroundStyle()>
+                <img @ref="context.Ref.Current" alt=@Artifact.FileName width=@width height=@height class=@ImageClass
+                 src=@(useSrc ?? (!context.IsIntersecting && !UserState.HasIntersected.Contains(Artifact.Id) ? Artifact.GetBackgroundImage() : Artifact.GetPublicUrl()))
+                 @onerror=@(() => useSrc = Artifact.GetImageErrorUrl(useSrc))>
+            </div>
+        </IntersectionObserve>
+    }
+    else
+    {
+        <div class=@ClassNames("overflow-hidden", Class) style=@Artifact.GetBackgroundStyle()>
+            <img alt=@Artifact.FileName width=@width height=@height class=@ImageClass
+                 src=@(useSrc ?? Artifact.GetPublicUrl())
+                 @onerror=@(() => useSrc = Artifact.GetImageErrorUrl(useSrc))>
+        </div>
+    }
+}
+
+@code {
+    [Inject] public UserState UserState { get; set; } = default!;
+    [Parameter, EditorRequired] public Artifact? Artifact { get; set; } = default!;
+    [Parameter] public int? MinSize { get; set; }
+    [Parameter] public bool LazyLoad { get; set; }
+    [Parameter] public string ImageClass { get; set; }
+
+
+    int width => MinSize == null ? Artifact!.Width
+        : (int)(Artifact!.Width > Artifact.Height
+            ? (Artifact.Width / (double)Artifact.Height) * MinSize.Value
+            : MinSize.Value);
+
+    int height => MinSize == null ? Artifact!.Height
+        : (int)(Artifact!.Height > Artifact.Width
+            ? (Artifact.Height / (double)Artifact.Width) * MinSize.Value
+            : MinSize.Value);
+
+    string? useSrc;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        useSrc = null;
+    }
+}

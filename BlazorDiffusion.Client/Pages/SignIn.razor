@@ -1,0 +1,111 @@
+@page "/signin"
+@inherits AppAuthComponentBase
+@inject ServiceStackStateProvider provider
+@inject NavigationManager NavigationManager
+
+@if (IsAuthenticated)
+{
+    NavigationManager.NavigateTo(ReturnUrl ?? NavigationManager.GetReturnUrl(), forceLoad:true);
+    return;
+}
+
+<h1 class="mb-4 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+    Sign In
+</h1>
+
+<div class="max-w-screen-md">
+
+<form method="post" action="/auth/credentials" class="max-w-xl">
+<input type="hidden" name="continue" value=@(ReturnUrl ?? "/signin") />
+<CascadingValue Value=@api.Error>
+    <div class="shadow overflow-hidden sm:rounded-md">
+        @if (!string.IsNullOrEmpty(f))
+        {
+            <ErrorSummary Status=@(new ResponseStatus { ErrorCode = nameof(Exception), Message = f }) />
+        }
+        else
+        {
+            <ErrorSummary Except=@VisibleFields />
+        }
+
+        <div class="px-4 py-5 bg-white dark:bg-black space-y-6 sm:p-6">
+            <div class="flex flex-col gap-y-4">
+                <TextInput @bind-Value="request.UserName" spellcheck="false" Help="Email address" />
+                <TextInput type="password" @bind-Value="request.Password" spellcheck="false" />
+                <CheckboxInput @bind-Value="request.RememberMe" />
+            </div>
+        </div>
+
+        <div class="pt-5 px-4 py-3 bg-gray-50 dark:bg-gray-800 text-right sm:px-6">
+            <div class="flex justify-end">
+                <FormLoading class="flex-1" Loading=@api.IsLoading />
+                <SecondaryButton href="/signup" class="mr-2">
+                    Register New User
+                </SecondaryButton>
+                <PrimaryButton type="submit">
+                    Login
+                </PrimaryButton>
+            </div>
+        </div>
+    </div>
+</CascadingValue>
+</form>
+
+<div class="flex mt-8">
+    <h3 class="hidden xs:block mr-4 leading-8 text-gray-500 dark:text-gray-400">Quick Links</h3>
+    <span class="relative z-0 inline-flex shadow-sm rounded-md">
+        <button @onclick='_ => SetUser("admin@email.com", "p@55wOrd")'
+            class="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            admin@email.com</button>
+        <button @onclick='_ => SetUser("system@email.com", "p@55wOrd")'
+            class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900  focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            system@email.com</button>
+        <button @onclick='_ => SetUser("demis@servicestack.com", "p@55wOrd")'
+            class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900  focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            demis@servicestack.com</button>
+        <button @onclick='_ => SetUser("darren@servicestack.com", "p@55wOrd")'
+            class="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900  focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            darren@servicestack.com</button>
+        <button @onclick='_ => SetUser("test@user.com", "p@55wOrd")'
+            class="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900  focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            test@user.com</button>
+    </span>
+</div>
+
+</div>
+
+@code {
+    [Parameter] public string? ReturnUrl { get; set; }
+    [Parameter, SupplyParameterFromQuery] public string? f { get; set; }
+
+    string[] VisibleFields => new[]{ nameof(Authenticate.UserName), nameof(Authenticate.Password) };
+
+    ApiResult<AuthenticateResponse> api = new();
+
+    Authenticate request = new();
+
+    void SetUser(string email, string password)
+    {
+        request.UserName = email;
+        request.Password = password;
+    }
+
+    async Task submit()
+    {
+        api.ClearErrors();
+
+        if (request.UserName.IsNullOrEmpty())
+            api.AddFieldError(nameof(request.UserName), "Email is required");
+
+        if (request.Password.IsNullOrEmpty())
+            api.AddFieldError(nameof(request.Password), "Password is required");
+
+        if (api.Failed) return;
+
+        api.IsLoading = true;
+        api = await provider.LoginAsync(request.UserName, request.Password);
+
+        if (api.Succeeded)
+            NavigationManager.NavigateTo(ReturnUrl ?? NavigationManager.GetReturnUrl(), forceLoad:true);
+    }
+}
