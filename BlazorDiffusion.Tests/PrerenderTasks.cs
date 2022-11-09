@@ -49,7 +49,7 @@ public class PrerenderTasks
     [Test]
     public void PrerenderPages()
     {
-        Render<Client.Pages.Index>();
+        //Render<Client.Pages.Index>();
     }
 
     [Test]
@@ -67,7 +67,7 @@ public class PrerenderTasks
             WriteLine($"Converting {file.FullName} ...");
 
             var name = file.Name.WithoutExtension();
-            var docRender = await Client.MarkdownUtils.LoadDocumentAsync(name, doc =>
+            var docRender = await MarkdownUtils.LoadDocumentAsync(name, doc =>
                 Task.FromResult(File.ReadAllText(file.FullName)));
 
             if (docRender.Failed)

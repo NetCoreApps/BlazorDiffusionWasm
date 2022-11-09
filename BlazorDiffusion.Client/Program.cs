@@ -22,6 +22,11 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
+if (builder.HostEnvironment.IsDevelopment())
+{
+    builder.Logging.SetMinimumLevel(LogLevel.Information);
+}
+
 // Use / for local or CDN resources
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

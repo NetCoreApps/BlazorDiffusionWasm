@@ -326,7 +326,7 @@ public class SaveFile
 
 [Route("/creative/metadata/{CreativeId}")]
 [ValidateHasRole(AppRoles.Moderator)]
-public class ViewCreativeMetadata : IReturn<Creative>
+public class ViewCreativeMetadata : IGet, IReturn<Creative>
 {
     [ValidateGreaterThan(0)]
     public int CreativeId { get; set; }
