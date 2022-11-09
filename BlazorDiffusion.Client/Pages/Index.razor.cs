@@ -103,11 +103,11 @@ public partial class Index : AppAuthComponentBase, IDisposable
         if (lastRequest != null)
         {
             var dirtyFields = request.GetDirtyFields(lastRequest);
-            await JS.Log("\n\n\n\nDirty Fields:", string.Join(", ", dirtyFields));
+            log("\n\n\n\nDirty Fields:", string.Join(", ", dirtyFields));
         }
         else
         {
-            await JS.Log("Loading new request...");
+            log("Loading new request...");
         }
 
         Log.LogDebug($"\n\n{0}", request.Dump());
