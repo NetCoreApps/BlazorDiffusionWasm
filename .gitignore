@@ -66,7 +66,7 @@ BenchmarkDotNet.Artifacts/
 # .NET Core
 project.lock.json
 project.fragment.lock.json
-artifacts/
+BlazorDiffusion/App_Data/artifacts/
 
 # StyleCop
 StyleCopReport.xml
