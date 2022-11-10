@@ -33,10 +33,6 @@ public partial class Index : AppAuthComponentBase, IDisposable
     [Parameter, SupplyParameterFromQuery] public int? Id { get; set; }
     [Parameter, SupplyParameterFromQuery] public int? View { get; set; }
 
-    // NOTHING WORKS
-    // For some reason initial load of ?album=... doesn't render results depsite being populated in logs
-    bool? ForceInitialRefresh { get; set; }
-
     GalleryResults GalleryResults = new(); // composite params to hopefully reduce params
 
     int? lastId = null;
@@ -81,12 +77,6 @@ public partial class Index : AppAuthComponentBase, IDisposable
         await loadUserState();
 
         await updateAsync();
-        if (ForceInitialRefresh == null)
-        {
-            ForceInitialRefresh = true;
-            log("ForceInitialRefresh {0} / {1}", i++, results.Count);
-            NavigationManager.NavigateTo(NavigationManager.Uri);
-        }
     }
 
     int i = 0;
