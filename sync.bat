@@ -32,3 +32,5 @@ XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.ServiceInterface BlazorD
 RD /Q /S BlazorDiffusion.ServiceModel
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.ServiceModel BlazorDiffusion.ServiceModel
 
+RD /Q /S BlazorDiffusion.Tests
+XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.Tests BlazorDiffusion.Tests
