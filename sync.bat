@@ -23,8 +23,10 @@ MOVE Program.cs BlazorDiffusion\
 
 COPY ..\BlazorDiffusion\BlazorDiffusion\appsettings.* BlazorDiffusion\
 COPY ..\BlazorDiffusion\BlazorDiffusion\Migrations\*.cs BlazorDiffusion\Migrations\
-COPY ..\BlazorDiffusion\BlazorDiffusion\App_Data\*.sqlite BlazorDiffusion\App_Data\
 COPY ..\BlazorDiffusion\BlazorDiffusion\proto\*.* BlazorDiffusion\proto\
+
+RD /Q /S BlazorDiffusion\App_Data
+XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion\App_Data BlazorDiffusion\App_Data
 
 RD /Q /S BlazorDiffusion.ServiceInterface
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.ServiceInterface BlazorDiffusion.ServiceInterface
