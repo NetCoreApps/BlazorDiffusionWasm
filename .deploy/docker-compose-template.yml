@@ -2,18 +2,61 @@ version: "3.9"
 services:
   ${APP_NAME}:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
+    depends_on:
+      - ${APP_NAME}-litestream
     restart: always
     network_mode: bridge
     ports:
       - "80"
     environment:
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
       VIRTUAL_HOST: ${HOST_DOMAIN}
+      WS_HOST: ws://${HOST_DOMAIN}
+      WS_PORT: 80
       LETSENCRYPT_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       DEPLOY_API: ${DEPLOY_API}
       DEPLOY_CDN: ${DEPLOY_CDN}
+      DREAMAI_APIKEY: ${DREAMAI_APIKEY}
+      SERVICESTACK_LICENSE: ${SERVICESTACK_LICENSE}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      AZURE_APP_ID: ${AZURE_APP_ID}
+      AZURE_APP_SECRET: ${AZURE_APP_SECRET}
+      GOOGLE_CONSUMER_KEY: ${GOOGLE_CONSUMER_KEY}
+      GOOGLE_CONSUMER_SECRET: ${GOOGLE_CONSUMER_SECRET}
+      FACEBOOK_APP_ID: ${FACEBOOK_APP_ID}
+      FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET}
     volumes:
       - ${APP_NAME}-mydb:/app/App_Data
+  ${APP_NAME}-litestream:
+    image: litestream/litestream
+    command: replicate -config /config/litestream.yml
+    volumes:
+      - ${APP_NAME}-mydb:/data
+      - ${APP_NAME}-assets:/config
+  
+  ${APP_NAME}-restore:
+    image: litestream/litestream
+    restart: "no"
+    profiles:
+      - litestream
+    command: restore -if-db-not-exists -if-replica-exists -config /assets/litestream.yml /data/db.sqlite
+    volumes:
+      - ${APP_NAME}-mydb:/data
+      - ${APP_NAME}-assets:/assets
+  
+  ${APP_NAME}-restore-analytics:
+    image: litestream/litestream
+    restart: "no"
+    profiles:
+      - litestream
+    command: restore -if-db-not-exists -if-replica-exists -config /assets/litestream.yml /data/analytics.sqlite
+    volumes:
+      - ${APP_NAME}-mydb:/data
+      - ${APP_NAME}-assets:/assets
+
   ${APP_NAME}-migration:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
     restart: "no"
@@ -22,6 +65,8 @@ services:
     command: --AppTasks=migrate
     volumes:
       - ${APP_NAME}-mydb:/app/App_Data
+      - ${APP_NAME}-assets:/app/App_Files
 
 volumes:
   ${APP_NAME}-mydb:
+  ${APP_NAME}-assets:
