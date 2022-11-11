@@ -19,7 +19,18 @@
 </div>
 
 <script>
-
+const pagePath = path.endsWith('/')
+    ? path.substring(0, path.length - 2) + '/index.html'
+    : path
+fetch(`/prerender${pagePath}`)
+    .then(r => r.text())
+    .then(html => {
+        if (html.indexOf('<!DOCTYPE html>') >= 0) return // ignore CDN 404.html
+        const pageBody = $1('#app-loading')
+        if (pageBody)
+            pageBody.innerHTML = `<i hidden data-prerender="${path}"></i>` + html
+    })
+    .catch(/* no prerendered content found for this path */)
 </script>
 
 <div id="blazor-error-ui" class="hidden fixed bottom-0 w-full z-10">

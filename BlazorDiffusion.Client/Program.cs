@@ -15,14 +15,14 @@ using BlazorDiffusion.ServiceModel;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddLogging(c => c
     .AddBrowserConsole()
-    .SetMinimumLevel(LogLevel.Trace)
+    .SetMinimumLevel(LogLevel.Debug)
 );
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
-if (builder.HostEnvironment.IsDevelopment())
+if (builder.HostEnvironment.IsProduction())
 {
     builder.Logging.SetMinimumLevel(LogLevel.Information);
 }
@@ -31,6 +31,10 @@ if (builder.HostEnvironment.IsDevelopment())
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress;
+#if DEBUG
+apiBaseUrl = builder.HostEnvironment.BaseAddress;
+#endif
+Console.WriteLine($"{builder.HostEnvironment.Environment} apiBaseUrl: {apiBaseUrl}");
 builder.Services.AddBlazorApiClient(apiBaseUrl);
 builder.Services.AddScoped<ServiceStackStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ServiceStackStateProvider>());

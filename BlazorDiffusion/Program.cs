@@ -1,16 +1,40 @@
-using ServiceStack;
-using Microsoft.Net.Http.Headers;
+using System.Net;
+using Microsoft.AspNetCore.Components.Authorization;
+using ServiceStack.Blazor;
+using BlazorDiffusion.UI;
+using BlazorDiffusion.ServiceModel;
+using Ljbc1994.Blazor.IntersectionObserver;
+using ServiceStack.Text;
 
-Licensing.RegisterLicense("OSS BSD-3-Clause 2022 https://github.com/NetCoreApps/BlazorGalleryWasm Jkk6ELaIZcg1lgFFzn5XmYeazEeVDZeS2jytwjIWOM3Z00vmnZ3BDyZx0tyPX1tcI5T6yH4mbbI9ndC262D/qHFaTMb5eVv4KrSOdYPvgsjINN8JSZqxvMT4Xwemw4QOnSrSFyhil/H1G6+WnjTtcFPRl9x5h/ZIaQBpfXeFOR4=");
+AppHost.RegisterKey();
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllersWithViews();
+
+// Add services to the container.
+builder.Services.AddLogging();
 builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+builder.Services.AddScoped<ServiceStackStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ServiceStackStateProvider>());
+
+var baseUrl = // builder.Configuration["oauth.RedirectUrl"] ?? // trying out UseInProcessClient
+    (builder.Environment.IsDevelopment() ? "https://localhost:5001" : "http://" + IPAddress.Loopback);
+
+builder.Services.AddLocalStorage();
+builder.Services.AddTransient<BlazorWasmAuthContext>(); // needed to use same WASM ServiceStackStateProvider
+builder.Services.AddBlazorServerApiClient(baseUrl);
+
+builder.Services.AddScoped<KeyboardNavigation>();
+builder.Services.AddScoped<UserState>();
+builder.Services.AddIntersectionObserver();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseWebAssemblyDebugging();
 }
 else
@@ -18,21 +42,35 @@ else
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    app.UseHttpsRedirection();
 }
-app.UseHttpsRedirection();
-app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
 
+app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+app.UseBlazorFrameworkFiles(); // WASM
 app.UseRouting();
+app.MapFallbackToPage("/_Host");
 
 app.UseServiceStack(new AppHost());
 
-app.UseEndpoints(endpoints =>
+
+BlazorConfig.Set(new()
 {
-    endpoints.MapRazorPages();
-    endpoints.MapControllers();
-    endpoints.MapFallbackToFile("index.html");
+    // This changes Blazor Components + ApiAsync APIs to use InProcessGateway instead of JsonApiClient
+    // UseInProcessClient = true,
+
+    Services = app.Services,
+    JSParseObject = JS.ParseObject,
+    EnableLogging = app.Environment.IsDevelopment(),
+    EnableVerboseLogging = app.Environment.IsDevelopment(),
+    AssetsBasePath = AppConfig.Instance.AssetsBasePath,
+    FallbackAssetsBasePath = AppConfig.Instance.FallbackAssetsBasePath,
+    DefaultProfileUrl = Icons.AnonUserUri,
+    OnApiErrorAsync = (request, apiError) =>
+    {
+        BlazorConfig.Instance.GetLog()?.LogDebug("\n\nOnApiErrorAsync(): {0}", apiError.Error.GetDetailedError());
+        return Task.CompletedTask;
+    }
 });
 
 app.Run();
