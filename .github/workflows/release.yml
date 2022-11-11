@@ -71,7 +71,7 @@ jobs:
       - name: Build dotnet project
         working-directory: ./BlazorDiffusion
         run: |
-          dotnet build /p:DEPLOY_API=${{ secrets.DEPLOY_API }} /p:DEPLOY_CDN=${{ secrets.DEPLOY_CDN }} /p:APP_TASKS=prerender
+          dotnet build -c Release /p:DEPLOY_API=${{ secrets.DEPLOY_API }} /p:DEPLOY_CDN=${{ secrets.DEPLOY_CDN }} /p:APP_TASKS=prerender
 
       # Authenticate, build and push to GitHub Container Registry (ghcr.io)
       - name: Login to GitHub Container Registry
