@@ -95,9 +95,8 @@ jobs:
         run: |
           echo "deploy_cdn=${{ secrets.DEPLOY_CDN }}" >> $GITHUB_ENV
 
-      # Deploy UI to GitHub Pages
+      # Deploy UI to R2
       - name: Deploy to R2 diffusion-client
-        if: ${{ env.deploy_cdn != '' }}
         run: |
           aws configure set aws_access_key_id ${{ secrets.R2_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.R2_SECRET_ACCESS_KEY }}
