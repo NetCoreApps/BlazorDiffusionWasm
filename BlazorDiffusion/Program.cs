@@ -4,7 +4,7 @@ using ServiceStack.Blazor;
 using BlazorDiffusion.UI;
 using BlazorDiffusion.ServiceModel;
 using Ljbc1994.Blazor.IntersectionObserver;
-using ServiceStack.Text;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 AppHost.RegisterKey();
 
@@ -45,11 +45,13 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
+
 app.UseBlazorFrameworkFiles(); // WASM
 app.UseRouting();
-app.MapFallbackToPage("/_Host");
+app.MapRazorPages();
+app.MapBlazorHub();
+//app.MapFallbackToPage("/_Host");
 
 app.UseServiceStack(new AppHost());
 

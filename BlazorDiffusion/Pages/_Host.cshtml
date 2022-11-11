@@ -1,9 +1,0 @@
-@page "/"
-@namespace BlazorDiffusion.Pages
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@{
-    
-    Layout = Request.Query["layout"] != "empty" ? "_Layout" : "_EmptyLayout";
-}
-
-<component type="typeof(App)" render-mode="WebAssemblyPrerendered" />
