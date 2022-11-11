@@ -21,7 +21,7 @@ COPY ..\BlazorDiffusion\BlazorDiffusion\*.cs BlazorDiffusion\
 DEL TrackingCircuitHandler.cs
 MOVE Program.cs BlazorDiffusion\
 
-COPY ..\BlazorDiffusion\BlazorDiffusion\appsettings.* BlazorDiffusion\
+REM COPY ..\BlazorDiffusion\BlazorDiffusion\appsettings.* BlazorDiffusion\
 COPY ..\BlazorDiffusion\BlazorDiffusion\Migrations\*.cs BlazorDiffusion\Migrations\
 COPY ..\BlazorDiffusion\BlazorDiffusion\proto\*.* BlazorDiffusion\proto\
 
