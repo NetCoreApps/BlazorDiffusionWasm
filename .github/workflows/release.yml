@@ -96,14 +96,12 @@ jobs:
           echo "deploy_cdn=${{ secrets.DEPLOY_CDN }}" >> $GITHUB_ENV
 
       # Deploy UI to GitHub Pages
-      - name: Deploy to GitHub Pages
+      - name: Deploy to R2 diffusion-client
         if: ${{ env.deploy_cdn != '' }}
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./BlazorDiffusion/bin/Release/net6.0/publish/wwwroot
-          user_name: 'GitHub Action'
-          user_email: 'action@github.com'
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.R2_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          aws s3 sync ./BlazorDiffusion/bin/Release/net6.0/publish/wwwroot s3://diffusion-client/ --endpoint-url https://b95f38ca3a6ac31ea582cd624e6eb385.r2.cloudflarestorage.com 
 
   deploy_via_ssh:
     needs: push_to_registry
