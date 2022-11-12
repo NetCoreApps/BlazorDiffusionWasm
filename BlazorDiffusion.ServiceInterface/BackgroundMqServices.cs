@@ -1,5 +1,6 @@
 ﻿using BlazorDiffusion.ServiceModel;
 using ServiceStack;
+using ServiceStack.Host.NetCore;
 using ServiceStack.Logging;
 using ServiceStack.OrmLite;
 using ServiceStack.OrmLite.Legacy;
@@ -286,5 +287,23 @@ public class BackgroundMqServices : Service
         }
 
         await PulseSyncTasks();
+    }
+
+    public IComponentRenderer ComponentRenderer { get; set; }
+
+    public async Task<object> Any(RenderComponent request)
+    {
+        var httpContext = (!request.TestContext
+            ? (Request as NetCoreRequest)?.HttpContext
+            : null) ?? HttpContextFactory.CreateHttpContext(Request.GetBaseUrl());
+
+        var obj = Request.GetRequestParams().ToObjectDictionary();
+        var args = new Dictionary<object, object>();
+        foreach (var entry in obj)
+        {
+            args[entry.Key] = obj[entry.Key];
+        }
+        var html = await ComponentRenderer.RenderComponentAsync(request.Type, httpContext, args);
+        return html;
     }
 }
