@@ -8,6 +8,7 @@ using ServiceStack.IO;
 using BlazorDiffusion.ServiceModel;
 using Amazon.S3;
 using ServiceStack.Logging;
+using System.Diagnostics;
 
 [assembly: HostingStartup(typeof(BlazorDiffusion.ConfigureUi))]
 
@@ -25,12 +26,14 @@ public class ConfigureUi : IHostingStartup
             var s3Client = container.Resolve<AmazonS3Client>();
             var appConfig = container.Resolve<AppConfig>();
 
+            IVirtualFiles virtualFiles = appHost.Config.DebugMode
+                ? new FileSystemVirtualFiles(Path.GetFullPath(Path.Combine(appHost.GetWebRootPath(), "../BlazorDiffusion.Client/wwwroot")))
+                : new R2VirtualFilesProvider(s3Client, appConfig.CdnBucket);
+
             container.Register<IPrerenderer>(c => new Prerenderer
             {
                 BaseUrl = appConfig.BaseUrl,
-                VirtualFiles = appHost.Config.DebugMode
-                    ? new FileSystemVirtualFiles(appHost.GetWebRootPath())
-                    : new R2VirtualFilesProvider(s3Client, appConfig.CdnBucket),
+                VirtualFiles = virtualFiles,
                 PrerenderDir = "/prerender",
                 Renderer = c.Resolve<IComponentRenderer>(),
                 Pages = {
@@ -68,12 +71,23 @@ public class Prerenderer : IPrerenderer
         var log = LogManager.GetLogger(GetType());
         httpContext ??= HttpContextFactory.CreateHttpContext(BaseUrl);
 
+        var sw = Stopwatch.StartNew();
         foreach (var page in Pages)
         {
+            sw.Restart();
             var path = PrerenderDir.CombineWith(page.WritePath);
-            log.DebugFormat("Rendering {0} to {1} {2}...", page.Component.FullName, VirtualFiles.RootDirectory.RealPath, path);
+            log.DebugFormat("Rendering {0} to {1} {2}...", page.Component.FullName, VirtualFiles.GetType().Name, path);
             var html = await Renderer.RenderComponentAsync(page.Component, httpContext, page.ComponentArgs);
-            await VirtualFiles.WriteFileAsync(path, html);
+            log.DebugFormat("Rendered {0} in {1} bytes, took {2}ms", page.Component.FullName, html?.Length ?? -1, sw.ElapsedMilliseconds);
+
+            if (!string.IsNullOrEmpty(html))
+            {
+                VirtualFiles.WriteFile(path, html);
+            }
+            else
+            {
+                VirtualFiles.DeleteFile(path);
+            }
         }
     }
 }
@@ -121,7 +135,7 @@ public class ComponentRenderer : IComponentRenderer
         var componentTagHelper = new ComponentTagHelper
         {
             ComponentType = componentType,
-            RenderMode = RenderMode.Static,
+            RenderMode = RenderMode.WebAssemblyPrerendered,
             Parameters = componentArgs,
             ViewContext = new ViewContext { HttpContext = httpContext },
         };

@@ -18,7 +18,7 @@ namespace BlazorDiffusion;
 
 public class AppHost : AppHostBase, IHostingStartup
 {
-        public AppHost() : base("Blazor Diffusion", typeof(MyServices).Assembly) { }
+    public AppHost() : base("Blazor Diffusion", typeof(MyServices).Assembly) { }
 
     public override void Configure(Container container)
     {

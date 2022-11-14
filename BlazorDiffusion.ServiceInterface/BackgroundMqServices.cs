@@ -122,6 +122,10 @@ public class BackgroundMqServices : Service
                 }
             }
             log("SyncTasks Periodic updated {0} albums, took {1}ms", count, swTask.ElapsedMilliseconds);
+
+            swTask.Restart();
+            await Prerenderer.RenderPages();
+            log("SyncTasks Prerenderer.RenderPages took {0}ms", swTask.ElapsedMilliseconds);
         }
 
         if (request.Daily == true)
@@ -302,5 +306,13 @@ public class BackgroundMqServices : Service
 
         var html = await ComponentRenderer.RenderComponentAsync(request.Type, httpContext, args);
         return html;
+    }
+
+    public IPrerenderer Prerenderer { get; set; }
+
+    public async Task<object> Any(Prerender request)
+    {
+        await Prerenderer.RenderPages();
+        return new PrerenderResponse();
     }
 }
