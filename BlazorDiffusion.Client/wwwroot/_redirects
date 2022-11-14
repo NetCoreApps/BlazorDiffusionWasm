@@ -1,1 +1,2 @@
 /api/*  {DEPLOY_API}/api/:splat  200
+/auth/*  {DEPLOY_API}/auth/:splat  200
