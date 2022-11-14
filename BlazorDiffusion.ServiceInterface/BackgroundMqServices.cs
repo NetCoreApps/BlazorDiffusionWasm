@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using static BlazorDiffusion.HttpContextFactory;
 
 namespace BlazorDiffusion.ServiceInterface;
 
@@ -297,12 +298,8 @@ public class BackgroundMqServices : Service
             ? (Request as NetCoreRequest)?.HttpContext
             : null) ?? HttpContextFactory.CreateHttpContext(Request.GetBaseUrl());
 
-        var obj = Request.GetRequestParams().ToObjectDictionary();
-        var args = new Dictionary<object, object>();
-        foreach (var entry in obj)
-        {
-            args[entry.Key] = obj[entry.Key];
-        }
+        var args = Request.GetRequestParams().ToObjectDictionary();
+
         var html = await ComponentRenderer.RenderComponentAsync(request.Type, httpContext, args);
         return html;
     }
