@@ -26,6 +26,8 @@ public class AppHost : AppHostBase, IHostingStartup
             AddRedirectParamsToQueryString = true,
             UseSameSiteCookies = true,
         });
+        
+        Plugins.Add(new ProfilingFeature());
 
         var cdnUrl = Environment.GetEnvironmentVariable("DEPLOY_CDN");
 
