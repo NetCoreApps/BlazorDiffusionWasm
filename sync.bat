@@ -28,11 +28,18 @@ COPY ..\BlazorDiffusion\BlazorDiffusion\proto\*.* BlazorDiffusion\proto\
 RD /Q /S BlazorDiffusion\App_Data
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion\App_Data BlazorDiffusion\App_Data
 
+MOVE BlazorDiffusion.ServiceInterface\BlazorDiffusion.ServiceInterface.csproj .
 RD /Q /S BlazorDiffusion.ServiceInterface
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.ServiceInterface BlazorDiffusion.ServiceInterface
+MOVE BlazorDiffusion.ServiceInterface.csproj BlazorDiffusion.ServiceInterface\
 
+MOVE BlazorDiffusion.ServiceModel\BlazorDiffusion.ServiceModel.csproj .
 RD /Q /S BlazorDiffusion.ServiceModel
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.ServiceModel BlazorDiffusion.ServiceModel
+MOVE BlazorDiffusion.ServiceModel.csproj BlazorDiffusion.ServiceModel\
 
+MOVE BlazorDiffusion.Tests\BlazorDiffusion.Tests.csproj .
 RD /Q /S BlazorDiffusion.Tests
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.Tests BlazorDiffusion.Tests
+MOVE BlazorDiffusion.Tests.csproj BlazorDiffusion.Tests\
+
