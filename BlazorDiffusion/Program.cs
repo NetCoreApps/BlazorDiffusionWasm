@@ -51,7 +51,7 @@ app.UseBlazorFrameworkFiles(); // WASM
 app.UseRouting();
 app.MapRazorPages();
 app.MapBlazorHub();
-//app.MapFallbackToPage("/_Host");
+app.MapFallbackToPage("/Index");
 
 app.UseServiceStack(new AppHost());
 

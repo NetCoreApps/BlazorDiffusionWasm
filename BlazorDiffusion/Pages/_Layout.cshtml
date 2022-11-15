@@ -42,7 +42,7 @@
         <div class="flex flex-col flex-1">
             <main class="flex-1">
                 <div class="py-6">
-                    <div class="px-4 sm:px-6 md:px-8">
+                    <div class="content px-4 sm:px-6 md:px-8">
                         @RenderBody()
                     </div>
                 </div>
@@ -93,6 +93,24 @@
 
     </div>
 </div>
+<script>
+const path = location.pathname
+if (!location.search)
+{
+    const pagePath = path.endsWith('/')
+        ? path.substring(0, path.length - 2) + '/index.html'
+        : path
+    fetch(`/prerender${pagePath}`)
+        .then(r => r.text())
+        .then(html => {
+            if (!html || html.indexOf('<!DOCTYPE html>') >= 0) return // ignore CDN 404.html
+            const pageBody = document.querySelector('#app-loading .content')
+            if (pageBody)
+                pageBody.innerHTML = `<i hidden data-prerender="${path}"></i>` + html
+        })
+        .catch(/* no prerendered content found for this path */)
+}
+</script>
 
 <script src="_framework/blazor.webassembly.js"></script>
 <script type="text/javascript" src="/js/servicestack-blazor.js"></script>
