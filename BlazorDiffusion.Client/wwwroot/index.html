@@ -21,12 +21,12 @@
                 <div class="flex flex-wrap items-center">
                     <div class="flex flex-grow flex-shrink flex-nowrap justify-end items-center">
                         <NavLink href="/" class="flex items-center flex-shrink-0 px-4 text-2xl whitespace-nowrap overflow-x-hidden flex items-center">
-                            <img class="h-8 w-auto"
-                                    src="/img/blazor.svg"
-                                    alt="My App">
+                            <img class="h-8 w-8"
+                                 src="/img/blazor.svg"
+                                 alt="My App">
                             <div class="ml-2 text-black dark:text-white">Diffusion</div>
                         </NavLink>
-                        <nav class="relative flex flex-grow" style="min-height: 3rem;">
+                        <nav class="relative flex flex-grow" style="min-height:55px">
                         </nav>
                     </div>
                 </div>
@@ -48,18 +48,22 @@
 
 <script>
 const path = location.pathname
-const pagePath = path.endsWith('/')
-    ? path.substring(0, path.length - 2) + '/index.html'
-    : path
-fetch(`/prerender${pagePath}`)
-    .then(r => r.text())
-    .then(html => {
-        if (html.indexOf('<!DOCTYPE html>') >= 0) return // ignore CDN 404.html
-        const pageBody = document.querySelector('#app-loading .content')
-        if (pageBody)
-            pageBody.innerHTML = `<i hidden data-prerender="${path}"></i>` + html
-    })
-    .catch(/* no prerendered content found for this path */)
+let prerenderedHtml = ""
+if (!location.search) {
+    const pagePath = path.endsWith('/')
+        ? path.substring(0, path.length - 2) + '/index.html'
+        : path
+    fetch(`/prerender${pagePath}`)
+        .then(r => r.text())
+        .then(html => {
+            if (!html || html.indexOf('<!DOCTYPE html>') >= 0) return // ignore CDN 404.html
+            const pageBody = document.querySelector('#app-loading .content')
+            if (pageBody)
+                pageBody.innerHTML = prerenderedHtml = `<i hidden data-prerender="${path}"></i>` + html
+        })
+        .catch(/* no prerendered content found for this path */)
+}
+function prerenderedPage() { return prerenderedHtml }
 </script>
 
 <div id="blazor-error-ui" class="hidden fixed bottom-0 w-full z-10">
