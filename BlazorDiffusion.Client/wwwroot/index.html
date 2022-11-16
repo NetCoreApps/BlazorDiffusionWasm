@@ -27,7 +27,7 @@ fetch(`/prerender${pagePath}`)
     .then(r => r.text())
     .then(html => {
         if (html.indexOf('<!DOCTYPE html>') >= 0) return // ignore CDN 404.html
-        const pageBody = $1('#app-loading')
+        const pageBody = document.querySelector('#app-loading')
         if (pageBody)
             pageBody.innerHTML = `<i hidden data-prerender="${path}"></i>` + html
     })
