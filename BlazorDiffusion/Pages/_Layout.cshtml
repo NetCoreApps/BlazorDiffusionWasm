@@ -96,7 +96,7 @@ if (!location.search) {
     const pagePath = path.endsWith('/')
         ? path.substring(0, path.length - 2) + '/index.html'
         : path
-    fetch(`/prerender${pagePath}`)
+    fetch(`/prerender${pagePath}?t=${new Date().valueOf()}`)
         .then(r => r.text())
         .then(html => {
             if (!html || html.indexOf('<!DOCTYPE html>') >= 0) return // ignore CDN 404.html
