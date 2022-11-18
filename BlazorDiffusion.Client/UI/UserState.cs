@@ -49,10 +49,10 @@ public class UserState
 
     NavigationManager NavigationManager { get; }
 
-    public UserState(CachedLocalStorage localStorage, IServiceGateway client, NavigationManager navigationManager)
+    public UserState(CachedLocalStorage localStorage, IClientFactory clientFactory, NavigationManager navigationManager)
     {
         LocalStorage = localStorage;
-        Client = client;
+        Client = clientFactory.GetGateway();
         NavigationManager = navigationManager;
     }
 
