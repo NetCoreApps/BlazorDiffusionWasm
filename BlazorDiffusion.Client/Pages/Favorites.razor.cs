@@ -50,15 +50,12 @@ public partial class Favorites : AppAuthComponentBase, IDisposable
         StateHasChanged();
     }
 
-    bool settingParams;
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        settingParams = true;
-        log("\n\n\nFavorites OnParametersSetAsync()");
+        log("\nFavorites OnParametersSetAsync()");
         await loadUserState();
         await handleParametersChanged();
-        settingParams = false;
     }
 
     int counter = 0;
@@ -78,6 +75,8 @@ public partial class Favorites : AppAuthComponentBase, IDisposable
             navTo("/favorites"); // album no longer exists, e.g. after last image was deleted
             return;
         }
+
+        SetTitle(SelectedAlbum?.Name ?? "My Likes");
 
         await loadResults();
         await GalleryResults.LoadAsync(UserState, Id, View);
@@ -134,12 +133,6 @@ public partial class Favorites : AppAuthComponentBase, IDisposable
     // When navigate + ArtifactMenu Adds/Removes to Albums
     async Task OnGalleryChange(GalleryChangeEventArgs args)
     {
-        if (settingParams)
-        {
-            log("Favorites ignore onChange whilst setting params");
-            return;
-        }
-
         log("Favorites OnGalleryChange{0}", args);
         //await handleParametersChanged();
 

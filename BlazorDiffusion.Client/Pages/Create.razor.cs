@@ -35,12 +35,6 @@ public partial class Create : AppAuthComponentBase, IDisposable
 
 
     ImageSize imageSize;
-    enum ImageSize
-    {
-        Square,
-        Portrait,
-        Landscape,
-    }
 
     enum CreateMenu
     {
@@ -113,6 +107,7 @@ public partial class Create : AppAuthComponentBase, IDisposable
         if (selectedGroup == null)
             selectGroup(AppData.CategoryGroups[0].Name);
 
+        SetTitle("Generate Image");
     }
 
     Creative? creative;
@@ -121,6 +116,7 @@ public partial class Create : AppAuthComponentBase, IDisposable
     {
         await base.OnParametersSetAsync();
         RegisterKeyboardNavigation(this.OnNavKeyAsync);
+        SetTitle("Generate Image");
 
         if (CreativeHistory.Count == 0)
             await loadHistory();
