@@ -42,6 +42,12 @@
     <Target Name="CreateAppDataFolder" AfterTargets="AfterPublish">
         <MakeDir Directories="$(PublishDir)App_Data" Condition="!Exists('$(PublishDir)App_Data')" />
     </Target>
+    
+    <ItemGroup>
+        <None Update="App_Data\seed\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
     <PropertyGroup>
         <ClientDir>$(MSBuildProjectDirectory)/../BlazorDiffusion.Client</ClientDir>
