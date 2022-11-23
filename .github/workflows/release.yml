@@ -157,7 +157,7 @@ jobs:
           output: .deploy/${{ github.event.repository.name }}-docker-compose.yml
 
       - name: Test DNS
-        run: nsloopup ${{ secrets.DEPLOY_API }}
+        run: nslookup ${{ secrets.DEPLOY_API }}
 
       # Copy only the docker-compose.yml to remote server home folder
       - name: copy compose file via scp
