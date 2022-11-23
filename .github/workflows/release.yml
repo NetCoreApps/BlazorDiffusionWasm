@@ -210,7 +210,7 @@ jobs:
 
 
       - name: Copy BlazorDiffusionWasm Seed Data to Remote Server
-        uses: appleboy/scp-action@v0.1.1
+        uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.DEPLOY_API }}
           username: ${{ secrets.DEPLOY_USERNAME }}
