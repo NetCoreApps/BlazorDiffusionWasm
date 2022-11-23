@@ -156,14 +156,6 @@ public class Migration1001 : MigrationBase
         public string RefId { get; set; }
     }
 
-    public class ArtifactFts
-    {
-        public int rowid { get; set; }
-        public int CreativeId { get; set; }
-        public string Prompt { get; set; }
-        public string RefId { get; set; }
-    }
-
     public class Artist : AuditBase
     {
         [AutoIncrement]
@@ -471,6 +463,15 @@ public class Migration1001 : MigrationBase
             creative.ModifierNames ??= new List<string>();
             creative.ArtistNames ??= new List<string>();
             creative.OwnerId = Users.GetUserById(creative.CreatedBy).Id;
+
+            var primaryArtifact = creative.PrimaryArtifactId != null
+                ? creative.Artifacts.FirstOrDefault(x => x.Id == creative.PrimaryArtifactId)
+                : null;
+
+            // If PrimaryArtifactId doesn't refer to one of its Artifacts, unset it to avoid dupes
+            if (primaryArtifact == null)
+                creative.PrimaryArtifactId = null;
+
             var id = creative.Id = (int)Db.Insert(creative, selectIdentity: true);
             foreach (var text in creative.ModifierNames)
             {
@@ -503,10 +504,6 @@ public class Migration1001 : MigrationBase
                     errors.Add($"{creative.Key} NotFound: Artist {artistName}");
                 }
             }
-
-            var primaryArtifact = creative.PrimaryArtifactId != null
-                ? creative.Artifacts.FirstOrDefault(x => x.Id == creative.PrimaryArtifactId)
-                : null;
 
             foreach (var artifact in creative.Artifacts)
             {
@@ -592,25 +589,6 @@ public class Migration1001 : MigrationBase
         }
 
 
-        // Create virtual tables for SQLite Full Text Search
-        Db.ExecuteNonQuery($@"CREATE VIRTUAL TABLE {nameof(ArtifactFts)}
-USING FTS5(
-{nameof(ArtifactFts.Prompt)},
-{nameof(ArtifactFts.CreativeId)},
-{nameof(ArtifactFts.RefId)});"
-        );
-
-        Db.ExecuteNonQuery($@"INSERT INTO {nameof(ArtifactFts)} 
-(rowid,
-{nameof(ArtifactFts.Prompt)},
-{nameof(ArtifactFts.CreativeId)},
-{nameof(ArtifactFts.RefId)})
-SELECT 
-{nameof(Artifact.Id)},
-{nameof(Artifact.Prompt)},
-{nameof(Artifact.CreativeId)},
-{nameof(Artifact.RefId)} FROM {nameof(Artifact)}");
-
 
         Console.WriteLine($"{nameof(Migration1001)} had {errors.Count} errors:");
         if (errors.Count > 0)
@@ -644,7 +622,6 @@ SELECT
         Db.DropTable<AppUser>();
         Db.DropTable<Modifier>();
         Db.DropTable<Artist>();
-        Db.DropTable<ArtifactFts>();
 
         var authRepo = CreateAuthRepo();
         authRepo.DropSchema(Db);
