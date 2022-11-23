@@ -156,6 +156,9 @@ jobs:
           input: .deploy/docker-compose-template.yml
           output: .deploy/${{ github.event.repository.name }}-docker-compose.yml
 
+      - name: Test DNS
+        run: nsloopup ${{ secrets.DEPLOY_API }}
+
       # Copy only the docker-compose.yml to remote server home folder
       - name: copy compose file via scp
         uses: appleboy/scp-action@v0.1.1
