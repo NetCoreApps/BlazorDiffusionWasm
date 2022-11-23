@@ -159,24 +159,16 @@ jobs:
       - name: Test DNS
         run: nslookup ${{ secrets.DEPLOY_API }}
 
-      - name: Run scp
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
-          chmod 700 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.DEPLOY_API }} >> ~/.ssh/known_hosts
-          scp -o StrictHostKeyChecking=no -r ".deploy/${{ github.event.repository.name }}-docker-compose.yml" ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_API }}:~/
-
       # Copy only the docker-compose.yml to remote server home folder
-#      - name: copy compose file via scp
-#        uses: appleboy/scp-action@v0.1.3
-#        with:
-#          host: ${{ secrets.DEPLOY_API }}
-#          username: ${{ secrets.DEPLOY_USERNAME }}
-#          port: 22
-#          key: ${{ secrets.DEPLOY_KEY }}
-#          source: ".deploy/${{ github.event.repository.name }}-docker-compose.yml"
-#          target: "~/"
+      - name: copy compose file via scp
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.DEPLOY_API }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          port: 22
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: ".deploy/${{ github.event.repository.name }}-docker-compose.yml"
+          target: "~/"
 
       # Populate litestream.yml with variables from build process, including TAG_NAME.
       - name: litestream.yml file prep
@@ -189,7 +181,7 @@ jobs:
           output: .deploy/litestream.yml
 
       - name: copy litestream.yml file via scp
-        uses: appleboy/scp-action@v0.1.1
+        uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.DEPLOY_API }}
           username: ${{ secrets.DEPLOY_USERNAME }}
