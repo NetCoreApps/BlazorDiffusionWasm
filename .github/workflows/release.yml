@@ -162,7 +162,7 @@ jobs:
       - name: Run scp
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
           chmod 700 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.DEPLOY_API }} >> ~/.ssh/known_hosts
           scp -o StrictHostKeyChecking=no -r ".deploy/${{ github.event.repository.name }}-docker-compose.yml" ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_API }}:~/
