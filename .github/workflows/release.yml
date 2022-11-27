@@ -190,23 +190,35 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           source: ".deploy/litestream.yml"
           target: "/var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data"
+      
+      #      - name: Restore db using litestream if needed
+      #        uses: appleboy/ssh-action@v0.1.4
+      #        env:
+      #          APPTOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #          USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+      #        with:
+      #          host: ${{ secrets.DEPLOY_API }}
+      #          username: ${{ secrets.DEPLOY_USERNAME }}
+      #          key: ${{ secrets.DEPLOY_KEY }}
+      #          port: 22
+      #          envs: APPTOKEN,USERNAME
+      #          script: |
+      #            echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
+      #            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
+      #            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-restore --exit-code-from ${{ github.event.repository.name }}-restore     
+      #            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-restore-analytics --exit-code-from ${{ github.event.repository.name }}-restore-analytics
 
-      - name: Restore db using litestream if needed
-        uses: appleboy/ssh-action@v0.1.4
-        env:
-          APPTOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+
+      - name: Copy BlazorDiffusionWasm Seed Data to Remote Server
+        uses: appleboy/scp-action@v0.1.1
         with:
           host: ${{ secrets.DEPLOY_API }}
           username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.DEPLOY_KEY }}
           port: 22
-          envs: APPTOKEN,USERNAME
-          script: |
-            echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
-            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
-            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-restore --exit-code-from ${{ github.event.repository.name }}-restore     
-            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-restore-analytics --exit-code-from ${{ github.event.repository.name }}-restore-analytics
+          key: ${{ secrets.DEPLOY_KEY }}
+          strip_components: 3
+          source: "./BlazorDiffusion/App_Data/seed/*"
+          target: "/var/lib/docker/volumes/deploy_BlazorDiffusionWasm-mydb/_data/seed/"
 
 
       - name: Copy BlazorDiffusionWasm Seed Data to Remote Server
@@ -219,6 +231,17 @@ jobs:
           strip_components: 3
           source: "./BlazorDiffusion/App_Data/seed/*"
           target: "/var/lib/docker/volumes/deploy_BlazorDiffusionWasm-mydb/_data/seed/"
+
+      - name: Clean db.sqlite during development
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DEPLOY_API }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          port: 22
+          script: |
+            rm -f /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-mydb/_data/db.sqlite
+            rm -f /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-mydb/_data/analytics.sqlite
 
       - name: Run remote db migrations
         uses: appleboy/ssh-action@v0.1.4
