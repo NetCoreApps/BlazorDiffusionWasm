@@ -10,8 +10,8 @@
     <Header />
     <div class="flex flex-col flex-1">
         <main class="flex-1">
-            <div class="py-6">
-                <div class="px-4 sm:px-6 md:px-8">
+            <div>
+                <div class="sm:px-6 md:px-8">
                     @if (!string.IsNullOrEmpty(PrerenderedHtml))
                     {
                         @((MarkupString)PrerenderedHtml)
@@ -27,7 +27,7 @@
     </div>
 </div>
 
-<div class="-mt-8 text-center">
+<div class="-mt-12 py-2 text-center">
     <a class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100" href="https://servicestack.net/blazor" target="_blank" title="powered by">servicestack.net/blazor</a>
 </div>
 

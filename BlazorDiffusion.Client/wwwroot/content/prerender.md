@@ -105,8 +105,8 @@ After which we end up with HTML similar to the structure below:
         <!-- <MainLayout/> -->
         <div class="md:pl-64 flex flex-col flex-1">
             <main class="flex-1">
-                <div class="py-6">
-                    <div class="content px-4 sm:px-6 md:px-8">
+                <div>
+                    <div class="content sm:px-6 md:px-8">
                         <!--PAGE-->
                         <div class="mb-4">
                             <h1 class="text-2xl font-semibold text-gray-900 flex">

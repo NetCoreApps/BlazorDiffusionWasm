@@ -269,9 +269,9 @@ public class BackgroundMqServices : Service
             await Scores.DecrementArtifactLikeAsync(Db, request.RecordArtifactUnlikeId.Value);
 
         if (request.RecordAlbumLikeId != null)
-            await Scores.IncrementArtifactLikeAsync(Db, request.RecordAlbumLikeId.Value);
+            await Scores.IncrementAlbumLikeAsync(Db, request.RecordAlbumLikeId.Value);
         if (request.RecordAlbumUnlikeId != null)
-            await Scores.DecrementArtifactLikeAsync(Db, request.RecordAlbumUnlikeId.Value);
+            await Scores.DecrementAlbumLikeAsync(Db, request.RecordAlbumUnlikeId.Value);
 
         if (request.ArtifactIdsAddedToAlbums?.Count > 0)
         {
@@ -301,10 +301,10 @@ public class BackgroundMqServices : Service
 
     public async Task Any(AnalyticsTasks request)
     {
-        using var analyticsDb = HostContext.AppHost.GetDbConnection(Databases.Analytics);
         
         if (request.RecordArtifactStat != null && !Users.IsAdminOrSystem(request.RecordArtifactStat.AppUserId))
         {
+            using var analyticsDb = HostContext.AppHost.GetDbConnection(Databases.Analytics);
             await analyticsDb.InsertAsync(request.RecordArtifactStat);
 
             if (request.RecordArtifactStat.Type == StatType.Download)
@@ -313,6 +313,7 @@ public class BackgroundMqServices : Service
 
         if (request.RecordSearchStat != null && !Users.IsAdminOrSystem(request.RecordSearchStat.AppUserId))
         {
+            using var analyticsDb = HostContext.AppHost.GetDbConnection(Databases.Analytics);
             await analyticsDb.InsertAsync(request.RecordSearchStat);
 
             if (request.RecordSearchStat.ArtifactId != null)
