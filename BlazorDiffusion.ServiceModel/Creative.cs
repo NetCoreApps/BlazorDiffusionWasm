@@ -123,6 +123,7 @@ public class CreateArtist : ICreateDb<Artist>, IReturn<Artist>
     [ValidateNotEmpty, Required]
     public string LastName { get; set; }
     public int? YearDied { get; set; }
+    [Input(Type = "tag"), FieldCss(Field = "col-span-12")]
     public List<string>? Type { get; set; }
 }
 
@@ -133,6 +134,7 @@ public class UpdateArtist : IPatchDb<Artist>, IReturn<Artist>
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public int? YearDied { get; set; }
+    [Input(Type = "tag"), FieldCss(Field = "col-span-12")]
     public List<string>? Type { get; set; }
 }
 [ValidateHasRole(AppRoles.Moderator)]
