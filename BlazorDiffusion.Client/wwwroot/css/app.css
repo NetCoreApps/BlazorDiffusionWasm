@@ -1331,6 +1331,10 @@ input[data-autocompleted] {
   height: 0.5rem;
 }
 
+.h-32 {
+  height: 8rem;
+}
+
 .h-full {
   height: 100%;
 }
@@ -1383,10 +1387,6 @@ input[data-autocompleted] {
   height: 5rem;
 }
 
-.h-32 {
-  height: 8rem;
-}
-
 .max-h-24 {
   max-height: 6rem;
 }
@@ -1409,6 +1409,10 @@ input[data-autocompleted] {
 
 .w-full {
   width: 100%;
+}
+
+.w-32 {
+  width: 8rem;
 }
 
 .w-7 {
@@ -1497,10 +1501,6 @@ input[data-autocompleted] {
 
 .w-20 {
   width: 5rem;
-}
-
-.w-32 {
-  width: 8rem;
 }
 
 .w-screen {
@@ -3978,6 +3978,10 @@ input[data-autocompleted] {
     display: none;
   }
 
+  .sm\:h-64 {
+    height: 16rem;
+  }
+
   .sm\:h-24 {
     height: 6rem;
   }
@@ -3992,6 +3996,10 @@ input[data-autocompleted] {
 
   .sm\:w-1\/3 {
     width: 33.333333%;
+  }
+
+  .sm\:w-64 {
+    width: 16rem;
   }
 
   .sm\:w-\[600px\] {
@@ -4418,6 +4426,14 @@ input[data-autocompleted] {
     display: table-cell;
   }
 
+  .xl\:h-96 {
+    height: 24rem;
+  }
+
+  .xl\:w-96 {
+    width: 24rem;
+  }
+
   .xl\:max-w-3xl {
     max-width: 48rem;
   }
@@ -4439,6 +4455,14 @@ input[data-autocompleted] {
 @media (min-width: 1536px) {
   .\32xl\:table-cell {
     display: table-cell;
+  }
+
+  .\32xl\:h-\[512px\] {
+    height: 512px;
+  }
+
+  .\32xl\:w-\[512px\] {
+    width: 512px;
   }
 
   .\32xl\:max-w-screen-xl {
