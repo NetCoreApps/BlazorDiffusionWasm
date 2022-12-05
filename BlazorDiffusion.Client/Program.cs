@@ -49,6 +49,7 @@ BlazorConfig.Set(new BlazorConfig
 {
     IsWasm = true,
     Services = app.Services,
+    ApiBaseUrl = apiBaseUrl,
     AssetsBasePath = "https://cdn.diffusion.works",
     FallbackAssetsBasePath = "https://pub-97bba6b94a944260b10a6e7d4bf98053.r2.dev",
     EnableLogging = true,

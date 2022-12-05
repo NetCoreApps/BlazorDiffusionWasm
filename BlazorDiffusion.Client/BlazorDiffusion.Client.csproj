@@ -26,9 +26,6 @@
     <ItemGroup>
       <ProjectReference Include="..\BlazorDiffusion.ServiceModel\BlazorDiffusion.ServiceModel.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Content Include="wwwroot\.well-known\microsoft-identity-association.json" />
-    </ItemGroup>
 
     <Target Name="Tailwind" BeforeTargets="Build" Condition="'$(SkipTailwindBuild)'!='true'">
         <Exec Command="npm run ui:build" />
