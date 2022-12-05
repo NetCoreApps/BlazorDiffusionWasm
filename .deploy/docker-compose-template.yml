@@ -5,6 +5,7 @@ services:
     depends_on:
       - ${APP_NAME}-litestream
     restart: always
+    network_mode: bridge
     ports:
       - "80"
     environment:
