@@ -5,7 +5,6 @@ services:
     depends_on:
       - ${APP_NAME}-litestream
     restart: always
-    network_mode: bridge
     ports:
       - "80"
     environment:
@@ -32,6 +31,7 @@ services:
       - ${APP_NAME}-mydb:/app/App_Data
   ${APP_NAME}-litestream:
     image: litestream/litestream
+    restart: always
     command: replicate -config /config/litestream.yml
     volumes:
       - ${APP_NAME}-mydb:/data
