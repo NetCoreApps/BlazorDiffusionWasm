@@ -12,9 +12,9 @@ else
 fi
 
 if [ ${latestdbdate} -ge ${olddbdate} ]; then
-  echo "$(date +%Y%m%dT%H:%M) - Updated db.sqlite\n" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/db-litestreamcheck.txt
+  echo "$(date +%Y-%m-%dT%H:%MZ) - Updated db.sqlite\n" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/db-litestreamcheck.txt
 else
-  echo "$(date +%Y%m%dT%H:%M) - Failed db.sqlite" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/db-litestreamcheck.txt
+  echo "$(date +%Y-%m-%dT%H:%MZ) - Failed db.sqlite" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/db-litestreamcheck.txt
 fi
 
 
@@ -28,9 +28,9 @@ else
 fi
 
 if [ ${latestadate} -ge ${oldadate} ]; then
-  echo "$(date +%Y%m%dT%H:%M) - Updated analytics.sqlite" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/analytics-litestreamcheck.txt
+  echo "$(date +%Y-%m-%dT%H:%MZ) - Updated analytics.sqlite" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/analytics-litestreamcheck.txt
 else
-  echo "$(date +%Y%m%dT%H:%M) - Failed analytics.sqlite" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/analytics-litestreamcheck.txt
+  echo "$(date +%Y-%m-%dT%H:%MZ) - Failed analytics.sqlite" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/analytics-litestreamcheck.txt
 fi
 
 # Success
