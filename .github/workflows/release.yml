@@ -170,6 +170,9 @@ jobs:
           source: ".deploy/${{ github.event.repository.name }}-docker-compose.yml"
           target: "~/"
           
+      - name: daily.sh permissions
+        run: chmod +x ~/daily.sh
+          
       - name: copy daily.sh
         uses: appleboy/scp-action@v0.1.3
         with:
