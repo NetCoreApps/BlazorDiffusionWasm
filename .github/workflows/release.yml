@@ -170,19 +170,19 @@ jobs:
           source: ".deploy/${{ github.event.repository.name }}-docker-compose.yml"
           target: "~/"
           
-      - name: daily.sh permissions
-        run: chmod +x ~/daily.sh
+      # - name: daily.sh permissions
+      #   run: chmod +x ~/daily.sh
           
-      - name: copy daily.sh
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.DEPLOY_API }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          port: 22
-          strip_components: 1
-          key: ${{ secrets.DEPLOY_KEY }}
-          source: ".deploy/daily.sh"
-          target: "~/"
+      # - name: copy daily.sh
+      #   uses: appleboy/scp-action@v0.1.3
+      #   with:
+      #     host: ${{ secrets.DEPLOY_API }}
+      #     username: ${{ secrets.DEPLOY_USERNAME }}
+      #     port: 22
+      #     strip_components: 1
+      #     key: ${{ secrets.DEPLOY_KEY }}
+      #     source: ".deploy/daily.sh"
+      #     target: "~/"
 
       # Populate litestream.yml with variables from build process, including TAG_NAME.
       - name: litestream.yml file prep
