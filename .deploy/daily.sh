@@ -12,7 +12,7 @@ else
 fi
 
 if [ ${latestdbdate} -ge ${olddbdate} ]; then
-  echo "$(date +%Y-%m-%dT%H:%MZ) - Updated db.sqlite\n" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/db-litestreamcheck.txt
+  echo "$(date +%Y-%m-%dT%H:%MZ) - Updated db.sqlite" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/db-litestreamcheck.txt
 else
   echo "$(date +%Y-%m-%dT%H:%MZ) - Failed db.sqlite" >> /var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data/db-litestreamcheck.txt
 fi
