@@ -35,7 +35,7 @@ var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.
 apiBaseUrl = builder.HostEnvironment.BaseAddress;
 #endif
 Console.WriteLine($"{builder.HostEnvironment.Environment} apiBaseUrl: {apiBaseUrl}");
-builder.Services.AddBlazorApiClient(apiBaseUrl);
+builder.Services.AddBlazorApiClient(apiBaseUrl, client => client.Timeout = TimeSpan.FromSeconds(300));
 builder.Services.AddScoped<ServiceStackStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<ServiceStackStateProvider>());
 
