@@ -61,7 +61,13 @@ JS = (function () {
     function deleteCookie(name) {
         setCookie({ name, value: getCookie(name), expires: new Date(0).toUTCString() })
     }
-
+    function getBreakpoints() {
+        let resolutions = { '2xl': 1536, xl: 1280, lg: 1024, md: 768, sm: 640 }
+        let w = document.body.clientWidth
+        let o = {}
+        Object.keys(resolutions).forEach(res => o[res] = w > resolutions[res])
+        return o
+    }
 
     return {
         SelectorAliases,
@@ -76,8 +82,10 @@ JS = (function () {
             if (typeof f == 'function') {
                 let ret = f.apply(target, args || [])
                 return ret
-            } else {
-                return target[fnName] = args
+            } else {   
+                if (args !== undefined)
+                    target[fnName] = args
+                return target[fnName]
             }
             return f
         },
@@ -93,7 +101,9 @@ JS = (function () {
                     let ret = f.apply($el, args || [])
                     return ret
                 } else {
-                    return $el[fnName] = args
+                    if (args !== undefined)
+                        $el[fnName] = args
+                    return $el[fnName]
                 }
             }
         },
@@ -162,6 +172,7 @@ JS = (function () {
                 Array.from(cookies).forEach(setCookie)
             }
         },
+        getBreakpoints,
         init(opt) {
             if (!opt || opt.colorScheme !== false) {
                 let colorScheme = opt && typeof opt.colorScheme === 'string'

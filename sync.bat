@@ -8,6 +8,11 @@ XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion\Shared BlazorDiffusion.C
 RD /Q /S BlazorDiffusion.Client\UI
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion\UI BlazorDiffusion.Client\UI
 
+RD /Q /S BlazorDiffusion.Client\wwwroot\img
+XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion\wwwroot\img BlazorDiffusion.Client\wwwroot\img
+
+COPY ..\BlazorDiffusion\BlazorDiffusion\wwwroot\js\*.js BlazorDiffusion.Client\wwwroot\js\
+
 COPY ..\BlazorDiffusion\BlazorDiffusion\tailwind.* BlazorDiffusion.Client\
 
 RD /Q /S BlazorDiffusion\App_Data
