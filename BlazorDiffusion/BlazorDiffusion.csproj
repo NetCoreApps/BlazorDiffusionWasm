@@ -1,18 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Content Include="_index.html">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
     <ItemGroup>
         <Using Include="BlazorDiffusion" />
         <Using Include="ServiceStack" />
@@ -67,6 +59,10 @@
         <TestsDir>$(MSBuildProjectDirectory)/../BlazorDiffusion.Tests</TestsDir>
     </PropertyGroup>
 
+    <Target Name="CopyWWW" AfterTargets="Build">
+        <WriteLinesToFile File="$(ClientDir)/wwwroot/_index.html" Lines="$([System.IO.File]::ReadAllText(_index.html).Replace('blazor.server.js','blazor.webassembly.js'))" Overwrite="true" Encoding="UTF-8" />
+    </Target>
+    
     <!-- Populated in release.yml with GitHub Actions secrets -->
     <Target Name="DeployApi" AfterTargets="Build" Condition="$(DEPLOY_API) != ''">
         <Exec Command="echo DEPLOY_API=$(DEPLOY_API)" />
