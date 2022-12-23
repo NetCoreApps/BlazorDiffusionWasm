@@ -56,7 +56,7 @@
 
     </div>
 
-    <div class="-mt-12 pb-2 pt-16 text-center">
+    <div class="-mt-12 pb-2 pt-24 text-center">
         <a class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100" href="https://servicestack.net/blazor" target="_blank" title="powered by">servicestack.net/blazor</a>
     </div>
 
@@ -93,16 +93,7 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="/js/servicestack-blazor.js"></script>
     <script>JS.init({ colorScheme: 'dark' })</script>
-
-    <script>
-        const origScrollTo = window.scrollTo;
-        window.scrollTo = (x, y) => {
-            const shouldSkip = true; // TODO: Insert your own logic here
-            if (x === 0 && y === 0 && shouldSkip)
-                return;
-            return origScrollTo.apply(this, arguments);
-        };
-    </script>
+    <script src="/js/custom.js"></script>
 
 </body>
 </html>
