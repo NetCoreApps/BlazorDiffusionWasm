@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div class="flex-grow">
-                <ArtifactGallery Results=@GalleryResults LazyLoad="LazyLoad ?? true" Change="OnGalleryChange" ColumnsSliderClass="-ml-16 sm:ml-0">
+                <ArtifactGallery Results=@GalleryResults LazyLoad="LazyLoad ?? true" Ssg="Ssg" Change="OnGalleryChange" ColumnsSliderClass="-ml-16 sm:ml-0">
                     <LeftHeader>
                     <div class="w-full sm:w-1/3 sm:pl-2 sm:-mr-20 flex justify-center sm:justify-start items-center whitespace-nowrap">
                     @if (SelectedAlbum != null)
@@ -88,20 +88,38 @@
                         var albumCover = UserState.GetAlbumCoverArtifact(userAlbum);
                         @if (albumCover != null)
                         {
-                            <NavLink href=@($"/?album={userAlbum.AlbumRef}&source={AppSource.Top}")>
-                                <div class=@ClassNames("sm:mt-2 hover:opacity-80 cursor-pointer h-16 w-16 sm:h-24 sm:w-24 overflow-hidden rounded sm:rounded-lg border-2",
-                                     album == userAlbum.AlbumRef ? "border-yellow-400" : "border-transparent")>
-                                    <ArtifactImage Artifact=@albumCover class="flex w-full h-full" ImageClass="object-cover" />
-                                </div>
-                            </NavLink>
+                            if (Ssg != true)
+                            {
+                                <NavLink href=@($"/?album={userAlbum.AlbumRef}&source={AppSource.Top}")>
+                                    <div class=@ClassNames("sm:mt-2 hover:opacity-80 cursor-pointer h-16 w-16 sm:h-24 sm:w-24 overflow-hidden rounded sm:rounded-lg border-2",
+                                         album == userAlbum.AlbumRef ? "border-yellow-400" : "border-transparent")>
+                                        <ArtifactImage Artifact=@albumCover class="flex w-full h-full" ImageClass="object-cover" />
+                                    </div>
+                                </NavLink>
+                            }
+                            else
+                            {
+                                <a href=@($"/albums/{userAlbum.Slug}.html")>
+                                    <div class=@ClassNames("sm:mt-2 hover:opacity-80 cursor-pointer h-16 w-16 sm:h-24 sm:w-24 overflow-hidden rounded sm:rounded-lg border-2", "border-transparent")>
+                                        <ArtifactImage Artifact=@albumCover class="flex w-full h-full" ImageClass="object-cover" />
+                                    </div>
+                                </a>
+                            }
                         }
                     }
-                    <NavLink href="/albums" class="text-xs sm:text-sm text-gray-500 dark:hover:text-gray-300 whitespace-nowrap w-16 sm:w-24 text-center pb-1">more</NavLink>
+                    @if (Ssg != true)
+                    {
+                        <NavLink href="/albums" class="text-xs sm:text-sm text-gray-500 dark:hover:text-gray-300 whitespace-nowrap w-16 sm:w-24 text-center pb-1">more</NavLink>
+                    }
+                    else
+                    {
+                        <a href="/albums.html" class="text-xs sm:text-sm text-gray-500 dark:hover:text-gray-300 whitespace-nowrap w-16 sm:w-24 text-center pb-1">more</a>
+                    }
                 </div>
             </div>
 
             <div class="flex-grow">
-                <ArtifactGallery Results=@GalleryResults LazyLoad="LazyLoad ?? true" Change="OnGalleryChange" ColumnsSliderClass="-ml-16 sm:ml-0">
+                <ArtifactGallery Results=@GalleryResults LazyLoad="LazyLoad ?? true" Ssg="Ssg" Change="OnGalleryChange" ColumnsSliderClass="-ml-16 sm:ml-0">
                     <LeftHeader>
                     <div class="w-full sm:w-1/3 sm:pl-2 sm:-mr-20 flex justify-center sm:justify-start items-center whitespace-nowrap">
                     @if (SelectedAlbum != null)
