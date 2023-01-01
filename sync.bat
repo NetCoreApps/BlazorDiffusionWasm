@@ -46,7 +46,9 @@ XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.ServiceModel BlazorDiffu
 MOVE BlazorDiffusion.ServiceModel.csproj BlazorDiffusion.ServiceModel\
 
 MOVE BlazorDiffusion.Tests\BlazorDiffusion.Tests.csproj .
+MOVE BlazorDiffusion.Tests\appsettings.json .
 RD /Q /S BlazorDiffusion.Tests
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion.Tests BlazorDiffusion.Tests
 MOVE BlazorDiffusion.Tests.csproj BlazorDiffusion.Tests\
+MOVE appsettings.json BlazorDiffusion.Tests\
 
