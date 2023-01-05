@@ -12,6 +12,7 @@ RD /Q /S BlazorDiffusion.Client\wwwroot\img
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion\wwwroot\img BlazorDiffusion.Client\wwwroot\img
 
 COPY ..\BlazorDiffusion\BlazorDiffusion\wwwroot\js\*.* BlazorDiffusion.Client\wwwroot\js\
+COPY ..\BlazorDiffusion\BlazorDiffusion\wwwroot\content\*.* BlazorDiffusion.Client\wwwroot\content\
 COPY ..\BlazorDiffusion\BlazorDiffusion\wwwroot\_index.html BlazorDiffusion\
 REM powershell -Command "(Get-Content ..\BlazorDiffusion\BlazorDiffusion\wwwroot\_index.html) -replace 'blazor.server.js', 'blazor.webassembly.js' | Out-File -encoding ASCII BlazorDiffusion\_index.html"
 
