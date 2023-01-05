@@ -3,7 +3,7 @@ import { CreateArtifactComment } from './dtos.mjs'
 import { useClient } from './static.js'
 
 export default {
-    template: `
+    template: /*html*/`
         <div class="w-full">
             <div class="flex flex-col w-full border border-gray-700 rounded bg-gray-900 overflow-hidden">
                 <textarea v-model="content" class="w-full h-24 m-0 border-none outline-none dark:bg-transparent" placeholder="Write a comment"></textarea>
@@ -22,7 +22,7 @@ export default {
             </div>
         </div>
     `,
-    props: ['artifactId'],
+    props: ['artifactId','replyId'],
     emits: ['updated'],
     setup(props, { attrs, emit }) {
 
@@ -31,8 +31,8 @@ export default {
         let { api, error, loading } = useClient()
 
         function submit() {
-            const { artifactId } = props
-            api(new CreateArtifactComment({ artifactId, content })).then(r => {
+            const { artifactId, replyId } = props
+            api(new CreateArtifactComment({ artifactId, replyId, content })).then(r => {
                 if (r.succeeded) {
                     content.value = ''
                     emit('updated', r.response)
