@@ -2,9 +2,6 @@ RD /Q /S BlazorDiffusion.Client\Pages
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion\Pages BlazorDiffusion.Client\Pages
 DEL BlazorDiffusion.Client\Pages\*.cshtml
 
-MOVE BlazorDiffusion.Client\Pages\Shared BlazorDiffusion\Pages\
-MOVE BlazorDiffusion.Client\Pages\ssg BlazorDiffusion\Pages\
-
 RD /Q /S BlazorDiffusion.Client\Shared
 XCOPY /Y /E /H /C /I ..\BlazorDiffusion\BlazorDiffusion\Shared BlazorDiffusion.Client\Shared
 
@@ -23,6 +20,11 @@ COPY ..\BlazorDiffusion\BlazorDiffusion\wwwroot\_index.html BlazorDiffusion\
 REM powershell -Command "(Get-Content ..\BlazorDiffusion\BlazorDiffusion\wwwroot\_index.html) -replace 'blazor.server.js', 'blazor.webassembly.js' | Out-File -encoding ASCII BlazorDiffusion\_index.html"
 
 COPY ..\BlazorDiffusion\BlazorDiffusion\tailwind.* BlazorDiffusion.Client\
+
+RD /Q /S BlazorDiffusion\Pages\Shared
+MOVE BlazorDiffusion.Client\Pages\Shared BlazorDiffusion\Pages\
+RD /Q /S BlazorDiffusion\Pages\ssg
+MOVE BlazorDiffusion.Client\Pages\ssg BlazorDiffusion\Pages\
 
 RD /Q /S BlazorDiffusion\App_Data
 MD BlazorDiffusion\App_Data
