@@ -6,8 +6,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <Using Include="BlazorDiffusion" />
         <Using Include="ServiceStack" />
+        <Using Include="ServiceStack.Mvc" />
+        <Using Include="BlazorDiffusion" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,6 +24,7 @@
         <PackageReference Include="ServiceStack" Version="6.*" />
         <PackageReference Include="ServiceStack.OrmLite.Sqlite.Data" Version="6.*" />
         <PackageReference Include="ServiceStack.Server" Version="6.*" />
+        <PackageReference Include="ServiceStack.Mvc" Version="6.*" />
     </ItemGroup>
 
     <ItemGroup>
