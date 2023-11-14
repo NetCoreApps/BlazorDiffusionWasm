@@ -30,33 +30,6 @@ services:
       FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET}
     volumes:
       - ${APP_NAME}-mydb:/app/App_Data
-  ${APP_NAME}-litestream:
-    image: litestream/litestream
-    restart: always
-    command: replicate -config /config/litestream.yml
-    volumes:
-      - ${APP_NAME}-mydb:/data
-      - ${APP_NAME}-assets:/config
-  
-  ${APP_NAME}-restore:
-    image: litestream/litestream
-    restart: "no"
-    profiles:
-      - litestream
-    command: restore -if-db-not-exists -if-replica-exists -config /assets/litestream.yml /data/db.sqlite
-    volumes:
-      - ${APP_NAME}-mydb:/data
-      - ${APP_NAME}-assets:/assets
-  
-  ${APP_NAME}-restore-analytics:
-    image: litestream/litestream
-    restart: "no"
-    profiles:
-      - litestream
-    command: restore -if-db-not-exists -if-replica-exists -config /assets/litestream.yml /data/analytics.sqlite
-    volumes:
-      - ${APP_NAME}-mydb:/data
-      - ${APP_NAME}-assets:/assets
 
   ${APP_NAME}-migration:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
