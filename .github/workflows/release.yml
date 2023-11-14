@@ -174,60 +174,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           source: ".deploy/${{ github.event.repository.name }}-docker-compose.yml"
           target: "~/"
-          
-      - name: daily.sh permissions
-        run: chmod +x ./.deploy/daily.sh
-         
-      - name: copy daily.sh
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.DEPLOY_API }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          port: 22
-          strip_components: 1
-          key: ${{ secrets.DEPLOY_KEY }}
-          source: ".deploy/daily.sh"
-          target: "~/"
-
-      # Populate litestream.yml with variables from build process, including TAG_NAME.
-      - name: litestream.yml file prep
-        uses: danielr1996/envsubst-action@1.1.0
-        env:
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-        with:
-          input: .deploy/litestream-template.yml
-          output: .deploy/litestream.yml
-
-      - name: copy litestream.yml file via scp
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.DEPLOY_API }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          port: 22
-          strip_components: 1
-          key: ${{ secrets.DEPLOY_KEY }}
-          source: ".deploy/litestream.yml"
-          target: "/var/lib/docker/volumes/deploy_BlazorDiffusionWasm-assets/_data"
-
-      - name: Restore db using litestream if needed
-        uses: appleboy/ssh-action@v0.1.4
-        env:
-          APPTOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USERNAME: ${{ secrets.DEPLOY_USERNAME }}
-        with:
-          host: ${{ secrets.DEPLOY_API }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          port: 22
-          envs: APPTOKEN,USERNAME
-          script: |
-            echo $APPTOKEN | docker login ghcr.io -u $USERNAME --password-stdin
-            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml pull
-            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-restore --exit-code-from ${{ github.event.repository.name }}-restore     
-            docker compose -f ~/.deploy/${{ github.event.repository.name }}-docker-compose.yml up ${{ github.event.repository.name }}-restore-analytics --exit-code-from ${{ github.event.repository.name }}-restore-analytics
-
-
+ 
       - name: Copy BlazorDiffusionWasm Seed Data to Remote Server
         uses: appleboy/scp-action@v0.1.3
         with:
